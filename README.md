@@ -101,15 +101,37 @@ cp .env.example .env
 
 ### 3. 飞书应用配置
 
-在飞书开放平台为应用开通以下权限：
+#### 开通权限
 
-- `im:message`（接收和发送消息）
-- `im:message.group_at_msg`（接收群组 @ 消息）
-- `bitable:app`（多维表格读写）
-- `docx:document`（文档读取）
-- `approval:approval`（发起审批）
+在飞书开放平台 → 权限管理，为应用开通以下权限（与当前项目实际使用一致）：
 
-开启**机器人**能力，并在「事件与回调」中订阅 `im.message.receive_v1` 事件。
+| 权限标识 | 说明 | 身份类型 | 用途 |
+|---------|------|---------|------|
+| `im:message` | 获取与发送单聊、群组消息 | 应用身份 | 机器人收发消息 |
+| `im:message.p2p_msg:readonly` | 读取用户发给机器人的单聊消息 | 应用身份 | 接收私聊消息 |
+| `im:message.group_at_msg.include_bot:readonly` | 获取群组中 @ 当前机器人的消息 | 应用身份 | 接收群聊 @ 消息 |
+| `bitable:app` | 查看、评论、编辑和管理多维表格 | 应用身份 | 读写候选人数据 |
+| `docx:document:readonly` | 查看新版文档 | 应用身份 | 读取简历文档内容 |
+| `approval:approval` | 查看、创建、更新、删除审批应用相关信息 | 应用身份 | 发起面试邀约审批 |
+| `approval:instance:write` | 操作审批实例 | 用户身份 | 创建/操作审批实例 |
+
+> 审批相关权限建议同时开通 `approval:approval`（应用身份）和 `approval:instance:write`（用户身份），避免发起审批时权限不足。
+
+#### 开启机器人能力
+
+在「应用能力」中开启**机器人**，并将机器人添加到需要使用的群聊或允许用户私聊。
+
+#### 配置事件订阅
+
+在「事件与回调」中选择 **WebSocket 长连接** 模式（无需公网 IP），订阅以下事件：
+
+- `im.message.receive_v1`（接收消息）
+
+同时配置加密策略中的 `FEISHU_VERIFICATION_TOKEN`（`FEISHU_ENCRYPT_KEY` 未启用加密时可留空）。
+
+#### 配置审批定义
+
+在飞书审批后台创建「面试邀约审批」，表单字段包含：候选人姓名、目标岗位、综合评分、推荐理由，将审批定义 Code 填入 `.env` 的 `APPROVAL_CODE`。
 
 ### 4. 启动服务
 
