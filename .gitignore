@@ -1,0 +1,17 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# 环境变量（含密钥，不提交）
+.env
+
+# IDE 配置文件
+.idea/
+.vscode/
